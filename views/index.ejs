@@ -3,20 +3,49 @@
 <html lang="ja">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>top</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>top</title>
 </head>
 
 <body>
-  <ul class="user-list">
-    <% for (const user of users) { %>
-        <li class="user-name"><%= user %></li>
-    <% } %>
-  </ul>
-  <input type="text" class="input-text" />
-  <button class="send-button">送信</button>
-  <script src="/static/index.js" defer></script>
+    <table border="1">
+        <tr>
+            <th>番号</th>
+            <td>商品名</td>
+            <td>値段</td>
+        </tr>
+        <% users.forEach((user, index) => { %>
+            <tr>
+            <th><%= index + 1 %></th>
+            <td class="user-name"><%= user.name %></td>
+            <td class="user-amount"><%= user.amount %></td>
+            </tr>
+        <% }) %>
+    </table>
+    <p>
+    新規の商品名: <input type="text" class="input-text" />
+    値段: <input type="text2" class="input-text2" />
+    <button class="send-button">送信</button>
+    </p>
+    <p>
+    変更する商品: <select name="c_item">
+        <% users.forEach((user) => { %>
+            <option class="user-name"><%= user.name %></option>
+        <% }) %>
+    </select>
+    変更後の値段: <input type="text-num" class="input-text4" />
+    <button class="change-button">送信</button>
+    </p>
+    <p>
+    削除する商品: <select name="d_item">
+        <% users.forEach((user) => { %>
+            <option class="user-name"><%= user.name %></option>
+        <% }) %>
+    </select>
+    <button class="delete-button">送信</button>
+    </p>
+    <script src="/static/index.js" defer></script>
 </body>
 
 </html>

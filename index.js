@@ -31,21 +31,46 @@ async function main() {
     app.get('/', logMiddleware, async (req, res) => {
         // const users = ['alpha', 'beta', 'gamma'];
         const users = await db.collection('user').find().toArray();
-        const names = users.map((user) => {
-            return user.name;
-        });
+        // console.log(users);
+        const userdatas = users.map((user) => ({
+            name: user.name, amount: user.amount
+        }));
 
-        res.render(path.resolve(__dirname, 'views/index.ejs'), { users: names });
+        res.render(path.resolve(__dirname, 'views/index.ejs'), { users: userdatas });
     });
 
     app.post('/api/user', express.json(), async (req, res) => {
+        const name = req.body.name;
+        // console.log(name);
+        const amount = req.body.amount;
+        // console.log(amount);
+        if (!name || !amount) {
+            res.status(400).send('Bad Request');
+            return;
+        }
+        await db.collection('user').insertOne({ name: name, amount: amount });
+        res.status(200).send('Created');
+    });
+
+    app.post('/api/update', express.json(), async (req, res) => {
+        const name = req.body.name;
+        const n_amount = req.body.n_amount;
+        if (!name || !n_amount) {
+            res.status(400).send('Bad Request');
+            return;
+        }
+        await db.collection('user').updateOne({ name: name }, { $set: { amount: n_amount } });
+        res.status(200).send('Updated');
+    });
+
+    app.post('/api/delete', express.json(), async (req, res) => {
         const name = req.body.name;
         if (!name) {
             res.status(400).send('Bad Request');
             return;
         }
-        await db.collection('user').insertOne({ name: name });
-        res.status(200).send('Created');
+        await db.collection('user').deleteOne({ name: name });
+        res.status(200).send('Deleted');
     });
 
     // ポート: 3000でサーバーを起動
